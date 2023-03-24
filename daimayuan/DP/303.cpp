@@ -11,17 +11,34 @@ typedef pair<int, int> PII;
 const int mod = 1e9+7;
 const double E = 1e-8;
 
-const int N = 260;
+const int N = 510;
 
 int n;
 int a[N], f[N][N];
 
 void solution() {
     cin >> n;
-    for (int i = 1; i <= n; i++) cin >> a[i];
+    for (int i = 1; i <= n; i++) {
+        cin >> a[i];
+        a[n + i] = a[i];
+    }
+    n *= 2;
+    for (int i = 1; i <= n; i++) a[i] += a[i - 1];
+
+    memset(f, 0x3f, sizeof f);
+    for (int i = 1; i <= n; i++) f[i][i] = 0;
+
+    for (int len = 1; len <= n; len++) {
+        for (int l = 1; l + len - 1 <= n; l++) {
+            int r = l + len - 1;
+            for (int k = l; k < r; k++) {
+                f[l][r] = min(f[l][r], f[l][k] + f[k + 1][r] + a[r] - a[l - 1]);
+            }
+        }
+    }
 
     int res = 0x3f3f3f3f;
-     
+    for (int i = 1; i + n / 2 - 1 <= n; i++) res = min(res, f[i][i + n / 2 - 1]);
     cout << res << endl;
 }
 
